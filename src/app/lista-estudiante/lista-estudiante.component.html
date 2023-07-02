@@ -1,5 +1,43 @@
-<h1>Condicion de almunos</h1>
+<div class="box-border py-2 bg-neutral-600 text-white text-lg">
+    <h1 class="text-4xl font-bold ml-4 mb-2">Alumnos</h1>
+    <p class="ml-8">A continuación se listan los alumnos con sus respectivos cursos y condiciones.</p>
+    <p class="ml-8">Posibles condiciones finales:</p>
+    <ul class="ml-12 mb-4">
+        <li class="flex flex-row gap-2 items-center">
+            <div class="w-4 h-4 border rounded-full bg-lime-400"></div> 
+            <span class="font-bold">Aprobado:</span> el alumno cumplio con las espectativas del curso. Supera la nota de aprobación (7 o mas) y cumplio con las asistencias (5 o menos).</li>
+        <li class="flex flex-row gap-2 items-center"><div class="w-4 h-4 border rounded-full bg-amber-400"></div>
+            <span class="font-bold">Aprobado:</span> el alumno supero la nota de aprobación (7 o mas) y pero tuvo mas de 5 inasistencias en el curso. El tutor debe verificar la situacion del alumno.</li>
+        <li class="flex flex-row gap-2 items-center">
+            <div class="w-4 h-4 border rounded-full bg-rose-400"></div>
+            <span class="font-bold">Desaprobado:</span> el alumno obtuvo una nota menor a 7.</li>
+    </ul>
+    
+    <ng-container *ngFor="let student of students">
 
-<ng-container *ngFor="let alumno of alumnos">
-    <h2></h2>
-</ng-container>
+        <section class="w-full p-2 bg-neutral-600">
+            <h2 class="inline mx-2 text-2xl font-medium">{{student.surname}} {{student.name}}</h2>
+            <span class="text-xs text-gray-400 italic">Comenzó el {{student.date | date: 'dd/MM/YYYY'}}</span>
+            <div class="w-full flex flex-row gap-2 px-2">
+
+                <ng-container *ngFor="let course of student.courses">
+                    <div class="my-2 max-w-xs px-4 py-4 rounded-md shadow-sm shadow-white">                    
+                        <h2 class="font-bold text-lg">{{course.name | uppercase}}</h2>
+                        <div class="flex flex-row gap-2">
+                            <span [style.text-decoration]="!course.aprove() ? 'underline' : ''">Nota: {{ course.studentNote }}</span>
+                            <span [style.text-decoration]="course.failAssistance() ? 'underline' : ''">Faltas: {{ course.studentAssitance }}</span>
+                        </div>
+
+                        <div *ngIf="course.aprove(); else desaprobado">
+                            <span [ngClass]="course.failAssistance() ? 'text-amber-400' : 'text-lime-400'" class="font-bold text-lg">Aprobado</span>
+                        </div>
+                        <ng-template #desaprobado>
+                            <span class="text-rose-400 font-bold text-lg">Desaprobado</span>
+                        </ng-template>
+                                                
+                    </div>
+                </ng-container>
+            </div>
+        </section>    
+    </ng-container>
+</div>

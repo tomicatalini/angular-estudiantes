@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { IEstudiante } from '../model/iestudiante';
-import { Inscripcion } from '../model/inscripcion';
-import { Curso } from '../model/curso';
-import { ICurso } from '../model/icurso';
+import { Student } from '../model/student';
+import { Course } from '../model/course';
 
 @Component({
   selector: 'app-lista-estudiante',
@@ -10,55 +8,61 @@ import { ICurso } from '../model/icurso';
   styleUrls: ['./lista-estudiante.component.css']
 })
 export class ListaEstudianteComponent {
-  public alumnos: IEstudiante[];
+  
+  public students: Student[];
 
   constructor(){
-    this.alumnos = this.generateData();
+    this.students = this.generateData();
   }
 
-  private generateData(): IEstudiante[]{
-    let analisis: ICurso = new Curso(1, 'Analisis Matemático 1');
-    let algebra: ICurso = new Curso(2, 'Algebra', 6, 10);
-    let algoritmos: ICurso = new Curso(3, 'Algorimos y Estructuras de Datos', 7, 3);
-    let db: ICurso = new Curso(1, 'Gestión de Datos');
+  /**
+   * Method that creates Students data randomly.
+   * @returns 
+   */
+  private generateData(): Student[]{
 
-    let cursos: ICurso[] =  [analisis, algebra, algoritmos, db];
+    const names = ['Sofía', 'Alejandro', 'Valentina', 'Sebastián', 'Isabella'];
+    const surnames = ['Martínez', 'Herrera', 'Medina', 'Vargas', 'Castro'];
 
-    let inscipcion1 = new Inscripcion(new Date(2023, 2, 11), analisis);
-    let inscipcion2 = new Inscripcion(new Date(2023, 4, 17), algebra);
-    let inscipcion3 = new Inscripcion(new Date(2023, 5, 1), algoritmos);
-    let inscipcion4 = new Inscripcion(new Date(2023, 2, 11), db);
+    const studends: Student[] = [];
+    const coursesNames = ['Analisis Matemático 1', 'Algebra', 'Algorimos y Estructuras de Datos', 'Gestión de Datos', 'Diseño de Sistemas'];
 
-    let alumnoTomi: IEstudiante = {
-      apellido: 'Catalini',
-      nombre: 'Tomás',
-      fechaInicio: new Date(2023, 1, 7),
-      incripciones: [inscipcion1, inscipcion2, inscipcion3]
-    }
+    for(let i = 1; i <= 4; i++){
+      let studentName = names[this.generateRandomNumber(names.length - 1)];
+      let studentSurname = surnames[this.generateRandomNumber(surnames.length - 1)];
+      let date = new Date(2023, 2, 8);
+      let studentCourses: Course[] = [];
+      
+      let coursesNamesTemp = coursesNames.slice();
 
-    let alumnoMichi: IEstudiante = {
-      apellido: 'Fechter',
-      nombre: 'Michelle',
-      fechaInicio: new Date(2023, 2, 27),
-      incripciones: [inscipcion3, inscipcion4]
+      for(let j = 1; j <= this.generateRandomNumber(4, 1); j++){
+        let courseName: string = coursesNamesTemp[this.generateRandomNumber(coursesNamesTemp.length - 1)];
+        let note: number = this.generateRandomNumber(10);
+        let assistance: number = this.generateRandomNumber(7);
+        
+        const course: Course = new Course(courseName, note, assistance);
+
+        studentCourses.push(course);
+
+        coursesNamesTemp = coursesNamesTemp.filter(c => c !== courseName);
+      }
+
+      const student: Student = new Student(studentName, studentSurname, date, studentCourses);
+
+      studends.push(student);
     }
     
-    let alumnoDoe: IEstudiante = {
-      apellido: 'John',
-      nombre: 'Doe',
-      fechaInicio: new Date(2023, 2, 2),
-      incripciones: [inscipcion3, inscipcion1, inscipcion2]
-    }
-
-    let alumnoPerez: IEstudiante = {
-      apellido: 'Maria',
-      nombre: 'Perez',
-      fechaInicio: new Date(2023, 1, 13),
-      incripciones: [inscipcion4]
-    }
-
-    let alumnos: IEstudiante[] = [alumnoTomi, alumnoMichi, alumnoDoe, alumnoPerez];
-    return alumnos;
+    return studends;
   }
+
+   /**
+     * Generade numeros aleatorios entre 0 y 10
+     * @returns 
+     */
+   private generateRandomNumber(tope: number, cota?: number): number {
+    let min = cota ? cota : 0;
+    return Math.floor(Math.random() * tope) + min;
+}
+
 
 }
